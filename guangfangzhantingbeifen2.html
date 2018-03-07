@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0, shrink-to-fit=no">
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+		<script type="text/javascript" src="js/jquery-1.9.0.js"></script>
+		<script type="text/javascript" src="js/utils.js"></script>
+		<link type="text/css" rel="stylesheet" href="css/utils.min.css">
+		<style>
+			body {
+				font-family: '微软雅黑';
+				overflow: hidden;
+			}
+			
+			.setting div {
+				position: fixed;
+				z-index: 100;
+				background: transparent;
+				color: #fff;
+				padding: 3px;
+				text-indent: 3px;
+			}
+			
+			#movementSpeed {
+				left: 0;
+				top: 105px;
+				height: 30px;
+				width: 500px;
+			}
+			
+			#cameraposition input,
+			#camerarotation input,
+			#movementSpeed input {
+				width: 80px;
+				height: 20px;
+				line-height: 20px;
+				border: 1px solid #fff;
+				font-size: 12px;
+				background: rgba(0, 0, 0, 0.1);
+				color: #fff;
+				outline: none;
+			}
+			
+			#isFly select,
+			#isLimit select {
+				width: 50px;
+				height: 20px;
+				line-height: 20px;
+				border: 1px solid #fff;
+				font-size: 12px;
+				text-align: center;
+				background: rgba(0, 0, 0, 0.1);
+				color: #fff;
+				outline: none;
+			}
+			
+			.mobliecontrols {
+				display: none;
+			}
+			
+			@media screen and (max-width: 1025px) {
+				.mobliecontrols {
+					display: block;
+				}
+			}
+		</style>
+		<link type="text/css" rel="stylesheet" href="https://cdn.csdu.net/lib/laydate/need/laydate.css">
+		<link type="text/css" rel="stylesheet" href="https://cdn.csdu.net/lib/laydate//skins/default/laydate.css" id="LayDateSkin">
+	</head>
+	<body>
+		<script src="js/three.js"></script>
+		<script src="js/tween.min.js"></script>
+		<script src="js/video.min.js"></script>
+		<script src="js/OBJLoader.js"></script>
+		<script src="dashen/FBXLoader.js"></script>
+		<script src="js/Box3.js"></script>
+		<script src="js/MTLLoader.js"></script>
+		<script src="js/ThreeCSG.js"></script>
+		<script src="js/Reflector.js"></script>
+		<script src="js/DDSLoader.js"></script>
+		<script src="js/OBJMTLLoader.js"></script>
+		<script src="wangyu_wenjian/firstpersoncontrols.js"></script>
+		<script src="js/OrbitControls.js"></script>
+		<script src="js/Detector.js"></script>
+		<script src="js/Projector.js"></script>
+		<script src="js/utils.js"></script>
+		<script src="wangyu_wenjian/nipplejs.min.js"></script>
+		<script src="js/CanvasRenderer.js"></script>
+		<!--透明视频的着色器开始-->
+		<script id="vertexShader" type="x-shader/x-vertex">
+            varying vec2 vUv;
+			void main()	{
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            vUv = uv;
+			}
+	    </script>
+	    <script id="fragmentShader" type="x-shader/x-fragment">
+	        uniform sampler2D map;
+	        varying vec2 vUv;
+	        void main() {
+	        vec4 color=texture2D(map,vUv);
+	        if(color.r<0.1&&color.g<0.1&&color.b<0.1)
+	        gl_FragColor = vec4(0, 0, 0, 0);
+	        else
+	        gl_FragColor=vec4(color.r, color.g, color.b, 1);
+	        }
+	    </script>
+		<!--透明视频的着色器结束-->
+		<video id="video" loop controls="controls" src="video/shapan2.mp4" x-webkit-airplay="true" playsinline webkit-playsinline="true" x5-video-player-type="h5" style="display: none" ></video>
+		<video id="videoq" loop controls="controls" src="video/honghuang.mp4" x-webkit-airplay="true" playsinline webkit-playsinline="true" x5-video-player-type="h5" style="display: none" ></video>
+		
+		<!--控制杆页面布局开始-->
+		<div class="mobliecontrols">
+			<div id="left" style="touch-action: none;">
+				<div class="nipple collection_0" id="nipple_0_0" style="position: absolute; opacity: 0.5; display: block; z-index: 999; transition: opacity 250ms; top: 80%; left: 12%;">
+					<div class="back" style="position: absolute; display: block; width: 120px; height: 120px; margin-left: -60px; margin-top: -60px; background: white; opacity: 0.5; border-radius: 50%;"></div>
+					<div class="front" style="width: 60px; height: 60px; position: absolute; display: block; margin-left: -30px; margin-top: -30px; background: white; opacity: 0.5; border-radius: 50%;"></div>
+				</div>
+			</div>
+			<div id="right" style="touch-action: none;">
+				<div class="nipple collection_1" id="nipple_1_1" style="position: absolute; opacity: 0.5; display: block; z-index: 999; transition: opacity 250ms; top: 80%; left: 88%;">
+					<div class="back" style="position: absolute; display: block; width: 120px; height: 120px; margin-left: -60px; margin-top: -60px; background: white; opacity: 0.5; border-radius: 50%;"></div>
+					<div class="front" style="width: 60px; height: 60px; position: absolute; display: block; margin-left: -30px; margin-top: -30px; background: white; opacity: 0.5; border-radius: 50%;"></div>
+				</div>
+			</div>
+		</div>
+		<!--控制杆页面布局结束-->
+		<script>
+			if(!Detector.webgl) {
+				Detector.addGetWebGLMessage();
+			}     
+
+			var objects = new Array();
+			var clock = new THREE.Clock();
+			var mixersq = [];
+			var container,objLoader,controls, firstPersoncontrols;
+			var camera, scene, renderer, light;
+			var video,videoq, image, imageContext;
+			init();
+
+			//控制杆开始
+			var joystickL = nipplejs.create({
+				zone: document.getElementById('left'),
+				mode: 'static',
+				position: {
+					left: '12%',
+					top: '80%'
+				},
+				color: 'red',
+				size: 120
+			});
+
+			var joystickR = nipplejs.create({
+				zone: document.getElementById('right'),
+				mode: 'static',
+				position: {
+					left: '88%',
+					top: '80%'
+				},
+				color: 'red',
+				size: 120
+			});
+			bindmobliecontrol();
+
+			function bindmobliecontrol() {
+				joystickL.on('dir:up', function() {
+					firstPersoncontrols.moveForward = true;
+					firstPersoncontrols.moveBackward = false;
+					firstPersoncontrols.moveLeft = false;
+					firstPersoncontrols.moveRight = false;
+				})
+				joystickL.on('dir:down', function() {
+					firstPersoncontrols.moveForward = false;
+					firstPersoncontrols.moveBackward = true;
+					firstPersoncontrols.moveLeft = false;
+					firstPersoncontrols.moveRight = false;
+				})
+				joystickL.on('dir:left', function() {
+					firstPersoncontrols.moveLeft = true;
+					firstPersoncontrols.moveRight = false;
+					firstPersoncontrols.moveForward = false;
+					firstPersoncontrols.moveBackward = false;
+				})
+				joystickL.on('dir:right', function() {
+					firstPersoncontrols.moveLeft = false;
+					firstPersoncontrols.moveRight = true;
+					firstPersoncontrols.moveForward = false;
+					firstPersoncontrols.moveBackward = false;
+				})
+				joystickR.on('dir:up', function() {
+					firstPersoncontrols.isvertical = 1;
+				})
+				joystickR.on('dir:down', function() {
+					firstPersoncontrols.isvertical = -1;
+				})
+				joystickR.on('dir:left', function() {
+					firstPersoncontrols.isrotate = -1;
+				})
+				joystickR.on('dir:right', function() {
+					firstPersoncontrols.isrotate = 1;
+				})
+				$('#left').on('touchend', function() {
+					firstPersoncontrols.moveForward = false;
+					firstPersoncontrols.moveBackward = false;
+					firstPersoncontrols.moveLeft = false;
+					firstPersoncontrols.moveRight = false;
+				});
+				$('#right').on('touchend', function() {
+					firstPersoncontrols.isrotate = 0;
+					firstPersoncontrols.isvertical = 0;
+				});
+			}
+			//控制杆结束
+			var percentComplete;
+			var shipingmian;
+			function init() {
+				window.addEventListener('resize', onWindowResize, false);
+				container = document.createElement('div');
+				document.body.appendChild(container);
+				camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 20000);
+				scene = new THREE.Scene();
+
+				var onProgress = function(xhr) {
+					if(xhr.lengthComputable) {
+						percentComplete = xhr.loaded / xhr.total * 100;
+						console.log(Math.round(percentComplete, 2) + '% downloaded');
+					}
+				};
+				var onError = function(xhr) {};
+				THREE.Loader.Handlers.add(/\.dds$/i, new THREE.DDSLoader());
+				var group = new THREE.Object3D();
+				var mtlLoader = new THREE.MTLLoader();
+//				获取视频
+				var video = document.getElementById('videoq');
+				var texture_Video = new THREE.VideoTexture(video);
+				texture_Video.minFilter = THREE.LinearFilter;
+				texture_Video.format = THREE.RGBFormat;
+				mtlLoader.setPath('guangfangzhanting/');
+				mtlLoader.load('ShuiYue_HH6.mtl', function(materials) {
+					materials.preload();
+					
+					objLoader = new THREE.OBJLoader();
+					objLoader.setMaterials(materials);
+					objLoader.setPath('guangfangzhanting/');
+					objLoader.load('ShuiYue_HH6.obj', function(object) {
+						console.log("模型obj");
+						console.log(object);
+						object.position.y = 9;
+						object.name = "changjing";
+						object.children[20].material.map = texture_Video;
+						objects.push(object.children[19]);
+						console.log("objects数组对象");
+						console.log(objects);
+						object.children[9].castShadow = true;
+						object.children[9].receiveShadow = true;
+
+
+						var Diffustexture = new THREE.TextureLoader().load('guangfangzhanting/Qiang_Diffuse.jpg');
+						var Normaltexture = new THREE.TextureLoader().load('guangfangzhanting/Qiang_Normal.jpg');
+						object.children[8].material.map = Diffustexture;
+						object.children[8].material.normalMap = Normaltexture;
+						
+						scene.add(object);
+
+						
+						//大神代码
+						var boxx = new THREE.Box3();
+						var meshss = object.children;
+						for(i = 0; i < meshss.length; i++) {
+							meshss[i].geometry.computeBoundingBox();
+
+							if(meshss[i].geometry.boundingBox.min.x < boxx.min.x) boxx.min.x = meshss[i].geometry.boundingBox.min.x;
+							if(meshss[i].geometry.boundingBox.min.y < boxx.min.y) boxx.min.y = meshss[i].geometry.boundingBox.min.y;
+							if(meshss[i].geometry.boundingBox.min.z < boxx.min.z) boxx.min.z = meshss[i].geometry.boundingBox.min.z;
+
+							if(meshss[i].geometry.boundingBox.max.x > boxx.max.x) boxx.max.x = meshss[i].geometry.boundingBox.max.x;
+							if(meshss[i].geometry.boundingBox.max.y > boxx.max.y) boxx.max.y = meshss[i].geometry.boundingBox.max.y;
+							if(meshss[i].geometry.boundingBox.max.z > boxx.max.z) boxx.max.z = meshss[i].geometry.boundingBox.max.z;
+
+							//	console.log(meshss[i].geometry.boundingBox);
+
+						}
+						//						console.log(boxx);
+
+					}, onProgress, onError);
+				});
+				
+				//加载面开始
+			
+				// model 
+//				var mtlLoadermian = new THREE.MTLLoader();
+//				mtlLoadermian.setPath('guangfangzhanting/');
+//				mtlLoadermian.load('mainl.mtl', function(materials) {
+//					var loader = new THREE.OBJLoader(manager);
+//					loader.load('guangfangzhanting/mainl.obj', function(object) {
+//						object.traverse(function(child) {
+//	
+//							if(child instanceof THREE.Mesh) {
+//								child.material.map = texture_Video;
+//								child.material.transparent = true;
+//								child.material.depthTest=false;
+//							}
+//	
+//						});
+//						object.name = "mian";
+//						objects.push(object.children[0]);
+//						console.log("面");
+//						console.log(object);
+//						object.position.z = -94;
+//						object.position.y = 9;
+//						
+//						scene.add(object);
+//						elf = object; //.scene;
+//					}, onProgress, onError);
+//					
+//				});
+				
+				//加载面结束
+
+				//复制官网代码,加载动画fbx模型start
+				var manager = new THREE.LoadingManager();
+				var onError = function(xhr) {
+					console.error(xhr);
+				};
+				var loader = new THREE.FBXLoader(manager);
+				loader.load('obj/xsi_man_skinning.fbx', function(object) {
+					object.mixer = new THREE.AnimationMixer(object);
+					mixersq.push(object.mixer);
+					var action = object.mixer.clipAction(object.animations[0]);
+					action.play();
+					object.position.y = 15;
+					object.position.x = 1800;
+					object.name = "donghua";
+//					scene.add(object);
+				}, onProgress, onError);
+				//复制官网代码,加载动画fbx模型end
+
+				//复制官网代码,加载多个小模型start
+				var manager = new THREE.LoadingManager();
+				manager.onProgress = function(item, loaded, total) {
+					console.log(item, loaded, total);
+				};
+				//官网代码,加载多个小模型end
+				renderer = new THREE.WebGLRenderer({antialias:true});
+				renderer.setPixelRatio(window.devicePixelRatio);
+				renderer.setSize(window.innerWidth, window.innerHeight);
+				renderer.setClearColor(0x000000);
+				container.appendChild(renderer.domElement);
+				camera.position.set(0, 50, 100);
+//				
+				
+//				射线对障碍物检测开始
+//				var raycaster2 = new THREE.Raycaster(android.position,new THREE.Vector3(1,0,0),0,10);
+//				var raycaster3 = new THREE.Raycaster(android.position,new THREE.Vector3(-1,0,0),0,10);
+//				var raycaster4 = new THREE.Raycaster(android.position,new THREE.Vector3(0,0,1),0,10);
+//				var raycaster5 = new THREE.Raycaster(android.position,new THREE.Vector3(0,0,-1),0,10);
+//				
+//				var intersections2 = raycaster2.intersectObject(objects);
+//				var intersections3 = raycaster3.intersectObject(objects);
+//				var intersections4 = raycaster4.intersectObject(objects);
+//				var intersections5 = raycaster5.intersectObject(objects);
+//				if(keyboard.presssed("down")){
+//					if(intersections2.length > 0 || intersections3.length > 0 || intersections4.length > 0 || intersections5.length > 0 ||){
+//						moveDistance = 0;
+//						android.translateZ(1);
+//					}
+//						android.translateZ(-moveDistance);
+//				}
+//				if(keyboard.presssed("up")){
+//					if(intersections2.length > 0 || intersections3.length > 0 || intersections4.length > 0 || intersections5.length > 0 ||){
+//						moveDistance = 0;
+//						android.translateZ(-1);
+//					}
+//						android.translateZ(moveDistance);
+//				}
+	//			射线对障碍物检测开始
+               
+               
+               
+               
+               
+				//镜面开始    注：镜面必须在renderer = new THREE.WebGLRenderer();的后面
+				var texture1 = new THREE.TextureLoader().load('guangfangzhanting/DM_Diffuse.jpg');//定义加载一个纹理
+				var groundMirror = new THREE.Reflector( 380, 380, {
+					clipBias: 0.003,
+					textureWidth: window.innerWidth * window.devicePixelRatio,
+					textureHeight: window.innerHeight * window.devicePixelRatio,
+					color: 0x777777,
+					recursion: 1	
+				});
+				groundMirror.position.x = -10;
+				groundMirror.position.y = 20;
+				groundMirror.position.z = -40;
+				groundMirror.rotateX( - Math.PI / 2 );
+				scene.add( groundMirror );//底部镜面
+				var mat = new THREE.MeshBasicMaterial({map:texture1,transparent:true,opacity:0.7});//创建一个材质
+				var geo = new THREE.BoxGeometry(380,380,0.1);
+				var mesh = new THREE.Mesh(geo,mat);
+				mesh.position.set(-10,20,-40);
+				mesh.rotateX( - Math.PI / 2);
+				scene.add(mesh);
+//				//镜面结束
+
+
+				
+				//走道镜面开始
+				var textureZ = new THREE.TextureLoader().load('guangfangzhanting/zd.png');//定义加载一个纹理
+				var groundMirror = new THREE.Reflector( 96, 217, {
+					clipBias: 0.003,
+					textureWidth: window.innerWidth * window.devicePixelRatio,
+					textureHeight: window.innerHeight * window.devicePixelRatio,
+					color: 0x777777,
+					recursion: 1
+				});
+				groundMirror.position.x = -8.5;
+				groundMirror.position.y = 22.2;
+				groundMirror.position.z = -40;
+				groundMirror.rotateX( - Math.PI / 2 );
+				scene.add( groundMirror );//底部镜面
+				var mat = new THREE.MeshBasicMaterial({map:textureZ,transparent:true,opacity:0.8});//创建一个材质
+				var geo = new THREE.BoxGeometry(98,217,0.01);
+				var mesh = new THREE.Mesh(geo,mat);
+				mesh.position.set(-8.5,23.2,-40);
+				mesh.rotateX( - Math.PI / 2);
+				scene.add(mesh);
+				
+				var textureQ = new THREE.TextureLoader().load('guangfangzhanting/zd.png');//定义加载一个纹理
+				var groundMirrorQ = new THREE.Reflector( 350, 99, {
+					clipBias: 0.003,
+					textureWidth: window.innerWidth * window.devicePixelRatio,
+					textureHeight: window.innerHeight * window.devicePixelRatio,
+					color: 0x777777,
+					recursion: 1
+				});
+				groundMirrorQ.position.set(-10.5,22.2,115);
+				groundMirrorQ.rotateX( - Math.PI / 2 );
+				scene.add( groundMirrorQ );//底部镜面
+				var matQ = new THREE.MeshBasicMaterial({map:textureQ,transparent:true,opacity:0.81});//创建一个材质
+				var geoQ = new THREE.BoxGeometry(350,99,0.01);
+				var meshQ = new THREE.Mesh(geoQ,matQ);
+				meshQ.position.set(-10.5,23.2,115);
+				meshQ.rotateX( - Math.PI / 2);
+				scene.add(meshQ);
+				//走道镜面结束
+               
+               
+               //透明视频贴图开始
+               	var videoTexture = document.getElementById('video');
+				var videoTexture = new THREE.VideoTexture(videoTexture);
+				videoTexture.minFilter = THREE.LinearFilter;
+				videoTexture.format = THREE.RGBFormat;
+				var vediomaterial = new THREE.MeshLambertMaterial({map:videoTexture,side:THREE.DoubleSide});
+				var shaderMaterial = new THREE.ShaderMaterial({
+					uniforms:{
+						"map":{value:videoTexture}
+					},
+					vertexShader:document.getElementById("vertexShader").textContent,
+					fragmentShader:document.getElementById("fragmentShader").textContent,
+					blending:THREE.AdditiveBlending,
+					depthTest:false,
+					depthWrite:false,
+					transparent:true
+				});
+				console.log("初始化shader材质成功");
+				
+				//沙盘透明视频开始
+				var material = new THREE.MeshBasicMaterial({
+					antialias:true,
+					map: videoTexture,
+					transparent:true,
+					overdraw: 0.5
+				});
+				var plane = new THREE.PlaneGeometry(128, 128); //创建了一个plane面
+				meshp = new THREE.Mesh(plane, shaderMaterial);
+				meshp.rotateX( -Math.PI/2 );
+				meshp.position.set(-9,27,-140);
+				scene.add(meshp);
+				//沙盘透明视频结束
+			
+			
+			
+			
+			
+//				var shape = new THREE.Shape(); //创建Shape对象
+//				var points = [
+//					new THREE.Vector2(60, 0),
+//					new THREE.Vector2(0, 0),
+//					//				new THREE.Vector2(60, -60)
+//				];
+//				shape.splineThru(points); //顶点带入样条插值计算函数
+//				var splinePoints = shape.getPoints(20); //插值计算细分数20
+//				var geometry = new THREE.LatheGeometry(points, 60, 0);
+//				
+//				var vediomesh = new THREE.Mesh(geometry,shaderMaterial);
+//				vediomesh.rotateY(3);
+//				vediomesh.rotateX( + Math.PI/4 );
+//				scene.add(vediomesh);
+//				video.loop = true;
+//				video.muted = true;
+//				video.play();
+//				vediomesh.name = "Name_Video";
+//				vediomesh.position.set(-8,27,-140);
+				//透明视频贴图结束
+				
+				
+               
+				//FirstPersonControls控制前进后退  
+				firstPersoncontrols = new THREE.FirstPersonControls(camera);
+				firstPersoncontrols.movementSpeed = 100;
+				firstPersoncontrols.lookSpeed = 0.1;
+				firstPersoncontrols.lookVertical = true;
+				
+               
+			
+				//controls.update();
+				light = new THREE.PointLight(0xffffff, 0.12);
+				light.position.set(0, 1, 0);
+				light.name = "light-name";
+				scene.add(light);
+
+				
+				
+				light = new THREE.AmbientLight(0xffffff, 2);
+//				light.position.set(0, 0, 0);
+				scene.add(light);
+				
+				
+				
+				var lightd = new THREE.DirectionalLight( 0xFFffff,0.1 );
+				var helper = new THREE.DirectionalLightHelper( lightd, 4);
+				lightd.position.y = 150;
+				scene.add( helper );
+				scene.add( lightd );
+				
+				animate();
+
+			}
+			
+			
+			//射线开始
+			//判断是pc端还是移动开始
+			function IsPC() {
+			    var userAgentInfo = navigator.userAgent;
+			    var Agents = ["Android", "iPhone",
+			                "SymbianOS", "Windows Phone",
+			                "iPad", "iPod"];
+			    var flag = 'mousedown';
+			    for (var v = 0; v < Agents.length; v++) {
+			        if (userAgentInfo.indexOf(Agents[v]) > 0) {
+			            flag = 'touchstart';
+			            break;
+			        }
+			    }
+			    return flag;
+			}
+			var flag = IsPC(); //mousedown为PC端，touchstart为手机端
+			//判断是pc端还是移动结束
+			var raycaster = new THREE.Raycaster();
+			var mouse = new THREE.Vector2();
+			document.addEventListener(flag, onMouseMove,false);
+//			console.log(scene);
+			function onMouseMove(event) {
+
+				var x, y;
+				if(event.changedTouches) {
+					x = event.changedTouches[0].pageX;
+					y = event.changedTouches[0].pageY;
+
+				} else {	
+					x = event.clientX;
+					y = event.clientY;
+				}
+				mouse.x = (x / window.innerWidth) * 2 - 1;
+				mouse.y = -(y / window.innerHeight) * 2 + 1;
+				raycaster.setFromCamera(mouse, camera);
+				var intersects = raycaster.intersectObjects(objects);
+				for(var i = 0; i < intersects.length; i++) {
+					intersects[i].object.material.color.set(0xff0000);//点击播放按钮变为红色
+					if(intersects[i].object.name == "default"){
+								//window.location.href = 'http://4710.csdu.net/61dad0945d2340cda0bd64e0625c92ab/interior.html?id=QUAN';	
+									if(document.getElementById('video').paused){
+									document.getElementById('video').play();
+									document.getElementById('videoq').play();
+									render();
+									}
+									else{
+									document.getElementById('video').pause();
+									document.getElementById('videoq').pause();
+									render();
+									}
+									console.log(x+y);
+								}
+				}
+				renderer.render(scene, camera);
+
+			}
+			//射线结束
+			
+//			
+			
+			
+
+			function onWindowResize() {
+//				firstPersoncontrols.handleResize();
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+				renderer.setSize(window.innerWidth, window.innerHeight);
+			}
+
+			function animate() {
+				requestAnimationFrame(animate);
+				if(mixersq.length > 0) {
+					for(var i = 0; i < mixersq.length; i++) {
+						mixersq[i].update(clock.getDelta());
+					}
+				}
+				
+				render();
+			}
+
+			function render() {
+				TWEEN.update();
+//				lightHelper.update();
+				firstPersoncontrols.update(clock.getDeltadonghua());
+				console.log("x=", camera.position.x, "y=", camera.position.y, "z=", camera.position.z); //相机移动的坐标值
+				renderer.render(scene, camera);
+			}
+		</script>
+	</body>
+</html>

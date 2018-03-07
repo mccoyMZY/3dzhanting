@@ -1,0 +1,159 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# 创建的文件:23.01.2018 17:44:20
+
+newmtl _ShuiYue_HHDM
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka DM_Diffuse.jpg
+	map_Kd DM_Diffuse.jpg
+
+newmtl _ShuiYue_HHlambert2SG
+	Ns 65.0000
+	Ni 1.5000
+	d 0.3500
+	Tr 0.6500
+	Tf 0.3500 0.3500 0.3500 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.0000 0.2000 0.6400
+	Ks 0.8010 0.8010 0.8010
+	Ke 0.0000 0.0000 0.0000
+	map_Ka BoLi.png
+	map_Kd BoLi.png
+
+newmtl _ShuiYue_HHDiZhuan
+	Ns 59.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.8550 0.8550 0.8550
+	Ke 0.0000 0.0000 0.0000
+	map_Ka DiZhuan_Diffuse.jpg
+	map_Kd DiZhuan_Diffuse.jpg
+	map_bump DiZhuan_Normal.jpg
+	bump DiZhuan_Normal.jpg
+
+newmtl _ShuiYue_HHMaterial__122
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka DaHua_1_Diffuse.jpg
+	map_Kd DaHua_1_Diffuse.jpg
+
+newmtl _ShuiYue_HHDiTu
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka DiTu_Diffuse.jpg
+	map_Kd DiTu_Diffuse.jpg
+	map_bump DiTu_Normal.jpg
+	bump DiTu_Normal.jpg
+
+newmtl _ShuiYue_HHYuanHuan1
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0863 0.2353 1.0000
+	Kd 0.0863 0.2353 1.0000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka 1.jpg
+	map_Kd 1.jpg
+
+newmtl _ShuiYue_HHQiang
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka Qiang_Diffuse.jpg
+	map_Kd Qiang_Diffuse.jpg
+	map_bump Qiang_Normal.jpg
+	bump Qiang_Normal.jpg
+
+newmtl _ShuiYue_HHDaHua
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka DaHua_Diffuse.jpg
+	map_Kd DaHua_Diffuse.jpg
+
+newmtl _ShuiYue_HH_Biao_unfold3ddefault
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka 2.jpg
+	map_Kd 2.jpg
+	map_refl anniu.jpg
+
+newmtl 13___Default
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl _113___Default
+	Ns 10.0000
+	Ni 1.5000
+	d 0.9000
+	Tr 0.1000
+	Tf 0.9000 0.9000 0.9000 
+	illum 2
+	Ka 0.7333 0.6431 0.4980
+	Kd 0.7333 0.6431 0.4980
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
